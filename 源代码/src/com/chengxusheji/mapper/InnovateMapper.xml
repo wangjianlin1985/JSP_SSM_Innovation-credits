@@ -1,0 +1,50 @@
+<!DOCTYPE mapper  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--namespace命名空间，为了对sql语句进行隔离，方便管理，mapper开发dao方式，使用namespace有特殊作用  
+mapper代理开发时将namespace指定为mapper接口的全限定名  
+ -->
+<mapper namespace="com.chengxusheji.mapper.InnovateMapper"> 
+<!--在mapper.xml文件中配置很多的sql语句，执行每个sql语句时，封装为MappedStatement对象 
+mapper.xml以statement为单位管理sql语句  
+ -->
+	<!-- 添加学生创新记录 -->
+	<insert id="addInnovate" parameterType="innovate">
+		insert into t_innovate(innovateTypeObj,innovateTitle,innovateContent,innovateFile,innovateScore,studentObj,sqTime,shenHeState,innovateChengji) values 
+		(#{innovateTypeObj.innovateTypeId},#{innovateTitle},#{innovateContent},#{innovateFile},#{innovateScore},#{studentObj.user_name},#{sqTime},#{shenHeState},#{innovateChengji})
+	</insert>
+
+	<!-- 按照查询条件分页查询学生创新记录 -->
+	<select id="queryInnovate" resultMap="innovateMap" >
+		select t_innovate.* from t_innovate,t_innovateType,t_student ${where} and t_innovate.innovateTypeObj = t_innovateType.innovateTypeId and t_innovate.studentObj = t_student.user_name limit #{startIndex},#{pageSize}
+	</select>
+	<resultMap id="innovateMap" type="innovate">
+        <id property="innovateId" column="innovateId" />
+        <association property="innovateTypeObj" column="innovateTypeObj" select="com.chengxusheji.mapper.InnovateTypeMapper.getInnovateType" />
+        <association property="studentObj" column="studentObj" select="com.chengxusheji.mapper.StudentMapper.getStudent" />
+    </resultMap>
+
+    <!-- 按照查询条件查询所有学生创新记录 -->
+	<select id="queryInnovateList" resultMap="innovateMap" >
+		select t_innovate.* from t_innovate,t_innovateType,t_student ${where} and t_innovate.innovateTypeObj = t_innovateType.innovateTypeId and t_innovate.studentObj = t_student.user_name
+	</select>
+
+    <!-- 按照查询条件的学生创新记录数 -->
+	<select id="queryInnovateCount" resultType="int">
+		select count(*) from t_innovate,t_innovateType,t_student ${where} and t_innovate.innovateTypeObj = t_innovateType.innovateTypeId and t_innovate.studentObj = t_student.user_name
+	</select>
+
+	<!-- 根据主键查询某个学生创新记录 -->
+	<select id="getInnovate" parameterType="int" resultMap="innovateMap">
+		select * from t_innovate where t_innovate.innovateId = #{innovateId}
+	</select>
+
+	<!-- 更新学生创新记录 -->
+	<update id="updateInnovate" parameterType="innovate">
+		update t_innovate set innovateTypeObj=#{innovateTypeObj.innovateTypeId},innovateTitle=#{innovateTitle},innovateContent=#{innovateContent},innovateFile=#{innovateFile},innovateScore=#{innovateScore},studentObj=#{studentObj.user_name},sqTime=#{sqTime},shenHeState=#{shenHeState},innovateChengji=#{innovateChengji} where innovateId = #{innovateId}
+	</update>
+
+	<!-- 删除学生创新记录 -->
+	<delete id="deleteInnovate" parameterType="int">
+		delete from t_innovate where innovateId=#{innovateId}
+	</delete>
+
+</mapper>

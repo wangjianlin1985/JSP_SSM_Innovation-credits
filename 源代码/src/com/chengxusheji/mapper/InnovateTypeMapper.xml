@@ -1,0 +1,48 @@
+<!DOCTYPE mapper  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--namespace命名空间，为了对sql语句进行隔离，方便管理，mapper开发dao方式，使用namespace有特殊作用  
+mapper代理开发时将namespace指定为mapper接口的全限定名  
+ -->
+<mapper namespace="com.chengxusheji.mapper.InnovateTypeMapper"> 
+<!--在mapper.xml文件中配置很多的sql语句，执行每个sql语句时，封装为MappedStatement对象 
+mapper.xml以statement为单位管理sql语句  
+ -->
+	<!-- 添加创新类型记录 -->
+	<insert id="addInnovateType" parameterType="innovateType">
+		insert into t_innovateType(innovateTypeName,sjnr,xuefen,cjjz) values 
+		(#{innovateTypeName},#{sjnr},#{xuefen},#{cjjz})
+	</insert>
+
+	<!-- 按照查询条件分页查询创新类型记录 -->
+	<select id="queryInnovateType" resultMap="innovateTypeMap" >
+		select t_innovateType.* from t_innovateType ${where} limit #{startIndex},#{pageSize}
+	</select>
+	<resultMap id="innovateTypeMap" type="innovateType">
+        <id property="innovateTypeId" column="innovateTypeId" />
+    </resultMap>
+
+    <!-- 按照查询条件查询所有创新类型记录 -->
+	<select id="queryInnovateTypeList" resultMap="innovateTypeMap" >
+		select t_innovateType.* from t_innovateType ${where}
+	</select>
+
+    <!-- 按照查询条件的创新类型记录数 -->
+	<select id="queryInnovateTypeCount" resultType="int">
+		select count(*) from t_innovateType ${where}
+	</select>
+
+	<!-- 根据主键查询某个创新类型记录 -->
+	<select id="getInnovateType" parameterType="int" resultMap="innovateTypeMap">
+		select * from t_innovateType where t_innovateType.innovateTypeId = #{innovateTypeId}
+	</select>
+
+	<!-- 更新创新类型记录 -->
+	<update id="updateInnovateType" parameterType="innovateType">
+		update t_innovateType set innovateTypeName=#{innovateTypeName},sjnr=#{sjnr},xuefen=#{xuefen},cjjz=#{cjjz} where innovateTypeId = #{innovateTypeId}
+	</update>
+
+	<!-- 删除创新类型记录 -->
+	<delete id="deleteInnovateType" parameterType="int">
+		delete from t_innovateType where innovateTypeId=#{innovateTypeId}
+	</delete>
+
+</mapper>
